@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "<CHARTNAME>.fullname" . }}
+  labels:
+    {{- include "<CHARTNAME>.labels" . | trim | nindent 4 }}
+    {{- with .Values.deployment.labels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
+  {{- with .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml . | trim | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "<CHARTNAME>.selectorLabels" . | trim | nindent 6 }}
+  template:
+    metadata:
+      name: {{ include "<CHARTNAME>.fullname" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.pod.annotations }}
+        {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "<CHARTNAME>.selectorLabels" . | trim | nindent 8 }}
+        {{- with .Values.pod.labels }}
+        {{- toYaml . | trim | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 3
+      serviceAccountName: {{ include "<CHARTNAME>.serviceAccountName" . }}
+      {{- with .Values.pod.securityContext }}
+      securityContext:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if .Values.config }}
+        - name: config
+          configMap:
+            name: {{ include "<CHARTNAME>.fullname" . }}-config
+        {{- end }}
+        {{- range .Values.secrets }}
+        {{- if (eq .mount "volume") }}
+        - name: {{ .name }}
+          secret:
+            - secretName: {{ .name | replace "_" "-" }}
+        {{- end }}
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.registry }}{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          {{- with .Values.args }}
+          args: {{ . }}
+          {{- end }}
+          env:
+            {{- with .Values.env }}
+            {{- toYaml . | trim | nindent 12 }}
+            {{- end }}
+            {{- range .Values.secrets }}
+            {{- if (eq .mount "env") }}
+            - name: {{ .name | replace "-" "_" | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name | replace "_" "-" }}
+                  key: secret
+            {{- end }}
+            {{- end }}
+          volumeMounts:
+            {{- if .Values.config }}
+            - name: config
+              mountPath: /config
+            {{- end }}
+            {{- range .Values.secrets }}
+            {{- if (eq .mount "volume") }}
+            - name: {{ .name }}
+              mountPath: /secrets
+            {{- end }}
+            {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            httpGet:
+              path: /
+              port: http
+          {{- end }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            initialDelaySeconds: {{ .initialDelaySeconds }}
+            timeoutSeconds: {{ .timeoutSeconds }}
+            periodSeconds: {{ .periodSeconds }}
+            failureThreshold: {{ .failureThreshold }}
+            httpGet:
+              path: /
+              port: http
+          {{- end }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | trim | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | trim | nindent 8 }}
+      {{- end }}

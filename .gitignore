@@ -1,0 +1,14 @@
+# Temporary packages
+tmp/packages
+
+# Package files
+*.tgz
+
+# Editor files
+.idea
+
+# Build artifacts
+build/*
+
+# OSX
+.DS_Store

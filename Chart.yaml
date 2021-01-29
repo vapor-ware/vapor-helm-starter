@@ -1,0 +1,12 @@
+apiVersion: v2
+description: A Helm chart for a new application
+name: <CHARTNAME>
+
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+sources:
+  -
+maintainers:
+  - name:
+    email: you@vapor.io

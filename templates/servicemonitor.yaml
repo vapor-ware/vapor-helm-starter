@@ -1,0 +1,32 @@
+{{- if and .Values.metrics.enabled .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.serviceMonitor.name | default "<CHARTNAME>-monitor" }}
+  {{- with .Values.serviceMonitor.namespace }}
+  namespace: {{ . }}
+  {{- end }}
+  labels:
+    {{- include "<CHARTNAME>.labels" . | trim | nindent 4 }}
+    {{- with .Values.serviceMonitor.labels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
+spec:
+  endpoints:
+  - interval: {{ .Values.serviceMonitor.interval | default "60s" }}
+    {{- with .Values.serviceMonitor.path }}
+    path: {{ . }}
+    {{- end }}
+    scrapeTimeout: {{ .Values.serviceMonitor.timeout | default "30s" }}
+    targetPort: {{ .Values.serviceMonitor.port }}
+  jobLabel: {{ .Values.serviceMonitor.name | default "<CHARTNAME>-monitor" }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Values.serviceMonitor.selectorNamespace | default .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "<CHARTNAME>.selectorLabels" . | trim | nindent 6 }}
+      {{- with .Values.serviceMonitor.selectorLabels }}
+      {{- toYaml . | trim | nindent 6 }}
+      {{- end }}
+{{- end }}
