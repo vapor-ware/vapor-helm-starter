@@ -25,13 +25,19 @@ imagePullSecrets: []
 ## Values to encapsulate as Secrets.
 ## Note that Secret names must be a valid DNS subdomain name.
 ## ref: https://kubernetes.io/docs/concepts/configuration/secret/
-secrets: []
+secrets: {}
+#  env:
 #  - name: my-secret
 #    value: foobar
 #    type: Opaque
 #    labels: {}
 #    annotations: {}
-#    mount: volume
+#  volumes:
+#  - name: other-secret
+#    value: foobar
+#    type: Opaque
+#    labels: {}
+#    annotations: {}
 
 ## Enable/disable application metrics export.
 metrics:

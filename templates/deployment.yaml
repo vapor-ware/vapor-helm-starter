@@ -42,19 +42,21 @@ spec:
       securityContext:
         {{- toYaml . | trim | nindent 8 }}
       {{- end }}
+      {{- if (or .Values.config .Values.secrets.volumes) }}
       volumes:
         {{- if .Values.config }}
         - name: config
           configMap:
             name: {{ include "<CHARTNAME>.fullname" . }}-config
         {{- end }}
-        {{- range .Values.secrets }}
-        {{- if (eq .mount "volume") }}
+        {{- if .Values.secrets.volumes }}
+        {{- range .Values.secrets.volumes }}
         - name: {{ .name }}
           secret:
             - secretName: {{ .name | replace "_" "-" }}
         {{- end }}
         {{- end }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           {{- with .Values.securityContext }}
@@ -74,8 +76,8 @@ spec:
             {{- with .Values.env }}
             {{- toYaml . | trim | nindent 12 }}
             {{- end }}
-            {{- range .Values.secrets }}
-            {{- if (eq .mount "env") }}
+            {{- if .Values.secrets.env }}
+            {{- range .Values.secrets.env }}
             - name: {{ .name | replace "-" "_" | upper }}
               valueFrom:
                 secretKeyRef:
@@ -83,17 +85,19 @@ spec:
                   key: secret
             {{- end }}
             {{- end }}
+          {{- if (or .Values.config .Values.secrets.volumes) }}
           volumeMounts:
             {{- if .Values.config }}
             - name: config
               mountPath: /config
             {{- end }}
-            {{- range .Values.secrets }}
-            {{- if (eq .mount "volume") }}
+            {{- if .Values.secrets.volumes }}
+            {{- range .Values.secrets.volumes }}
             - name: {{ .name }}
               mountPath: /secrets
             {{- end }}
             {{- end }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
