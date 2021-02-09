@@ -21,6 +21,7 @@ image:
 
 ## Pull secrets for pulling private images.
 imagePullSecrets: []
+#  - name: my-pull-secret
 
 ## Values to encapsulate as Secrets.
 ## Note that Secret names must be a valid DNS subdomain name.
