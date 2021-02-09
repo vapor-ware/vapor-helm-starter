@@ -53,7 +53,10 @@ spec:
         {{- range .Values.secrets.volumes }}
         - name: {{ .name }}
           secret:
-            - secretName: {{ .name | replace "_" "-" }}
+            secretName: {{ .name | replace "_" "-" }}
+            items:
+            - key: secret
+              path: {{ .path | default .name }}
         {{- end }}
         {{- end }}
       {{- end }}
