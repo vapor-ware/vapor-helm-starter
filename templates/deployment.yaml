@@ -53,7 +53,7 @@ spec:
         {{- range .Values.secrets.volumes }}
         - name: {{ .name }}
           secret:
-            secretName: {{ .name | replace "_" "-" }}
+            secretName: {{ .name | replace "_" "-" | lower }}
             items:
             - key: secret
               path: {{ .path | default .name }}
@@ -84,7 +84,7 @@ spec:
             - name: {{ .name | replace "-" "_" | upper }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .name | replace "_" "-" }}
+                  name: {{ .name | replace "_" "-" | lower }}
                   key: secret
             {{- end }}
             {{- end }}
@@ -96,7 +96,7 @@ spec:
             {{- end }}
             {{- if .Values.secrets.volumes }}
             {{- range .Values.secrets.volumes }}
-            - name: {{ .name }}
+            - name: {{ .name  | replace "-" "_" | lower }}
               mountPath: /secrets
             {{- end }}
             {{- end }}
