@@ -47,7 +47,7 @@ metrics:
 ## Service account configuration options.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:
-  create: true
+  create: false
   annotations: {}
   labels: {}
   ## The name of the service account to use.
@@ -109,7 +109,7 @@ serviceMonitor:
   enabled: false
   name: <CHARTNAME>-monitor
   port: http
-  path: "/metrics"
+  path: /metrics
   timeout: 4s
   interval: 5s
 
@@ -127,14 +127,14 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
 
 ## Configuration options for a PodDisruptionBudget.
 ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
 podDisruptionBudget:
   enabled: false
-#  annotations: {}
-#  labels: {}
+  annotations: {}
+  labels: {}
 #  minAvailable: 2
 #  maxUnavailable: 1
 
@@ -146,8 +146,17 @@ podSecurityPolicy:
   annotations: {}
   labels: {}
   allowances: {}
-    # privileged: true
-    # runAsUser: 1000
+#    privileged: false
+#    seLinux:
+#      rule: RunAsAny
+#    supplementalGroups:
+#      rule: RunAsAny
+#    runAsUser:
+#      rule: RunAsAny
+#    fsGroup:
+#      rule: RunAsAny
+#    volumes:
+#      - '*'
 
 ## Readiness and liveness probe configuration options.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
