@@ -5,6 +5,9 @@ metadata:
   name: {{ include "<CHARTNAME>.fullname" . }}
   labels:
     {{- include "<CHARTNAME>.labels" . | nindent 4 }}
+    {{- with .Values.globalLabels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

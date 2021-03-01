@@ -8,6 +8,9 @@ metadata:
     {{- with .Values.podDisruptionBudget.labels }}
     {{- toYaml . | trim | nindent 4 }}
     {{- end }}
+    {{- with .Values.globalLabels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
   {{- with .Values.podDisruptionBudget.annotations }}
   annotations:
     {{- toYaml . | trim | nindent 4 }}

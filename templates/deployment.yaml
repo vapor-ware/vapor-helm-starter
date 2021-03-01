@@ -7,6 +7,9 @@ metadata:
     {{- with .Values.deployment.labels }}
     {{- toYaml . | trim | nindent 4 }}
     {{- end }}
+    {{- with .Values.globalLabels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
   {{- with .Values.deployment.annotations }}
   annotations:
     {{- toYaml . | trim | nindent 4 }}

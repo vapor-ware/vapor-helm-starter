@@ -11,6 +11,9 @@ metadata:
     {{- with .Values.serviceMonitor.labels }}
     {{- toYaml . | trim | nindent 4 }}
     {{- end }}
+    {{- with .Values.globalLabels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
 spec:
   endpoints:
   - interval: {{ .Values.serviceMonitor.interval | default "60s" }}
