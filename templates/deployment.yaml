@@ -23,6 +23,7 @@ spec:
       name: {{ include "<CHARTNAME>.fullname" . }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- with .Values.pod.annotations }}
         {{- toYaml . | trim | nindent 8 }}
         {{- end }}
