@@ -15,6 +15,9 @@ metadata:
     {{- with .Values.ingress.labels }}
     {{- toYaml . | trim | nindent 4 }}
     {{- end }}
+    {{- with .Values.globalLabels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | trim | nindent 4 }}

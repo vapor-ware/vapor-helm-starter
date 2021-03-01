@@ -12,6 +12,9 @@ metadata:
     {{- with .Values.podSecurityPolicy.labels }}
     {{- toYaml . | trim | nindent 4 }}
     {{- end }}
+    {{- with .Values.globalLabels }}
+    {{- toYaml . | trim | nindent 4 }}
+    {{- end }}
   {{- with .Values.podSecurityPolicy.annotations }}
   annotations:
     {{- toYaml . | trim | nindent 4 }}

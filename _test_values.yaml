@@ -6,6 +6,9 @@
 config:
   key: value
 
+globalLabels:
+  global-metadata: value
+
 image:
   registry: docker.io/v1
   repository: vaporio/<CHARTNAME>

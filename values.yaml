@@ -11,6 +11,9 @@ fullnameOverride: ""
 ## Application configuration.
 config: {}
 
+## Labels applied to all manifest objects for the Chart.
+globalLabels: {}
+
 ## Image configuration options.
 image:
   registry: ""
