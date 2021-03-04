@@ -40,16 +40,18 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ . }}
+            {{- if semverCompare ">=1.19.0-0" $kubeTargetVersion }}
             pathType: Prefix
             backend:
-          {{- if semverCompare ">=1.19.0-0" $kubeTargetVersion }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
-          {{- else  }}
+            {{- else  }}
+            backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
+            {{- end }}
           {{- end }}
     {{- end }}
   {{- end }}
