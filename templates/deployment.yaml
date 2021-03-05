@@ -79,6 +79,7 @@ spec:
           {{- with .Values.args }}
           args: {{ . }}
           {{- end }}
+          {{- if (or .Values.env .Values.secrets.env) }}
           env:
             {{- with .Values.env }}
             {{- toYaml . | trim | nindent 12 }}
@@ -92,6 +93,7 @@ spec:
                   key: secret
             {{- end }}
             {{- end }}
+          {{- end }}
           {{- if (or .Values.config .Values.secrets.volumes) }}
           volumeMounts:
             {{- if .Values.config }}
