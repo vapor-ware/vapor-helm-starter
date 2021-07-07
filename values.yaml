@@ -141,26 +141,6 @@ podDisruptionBudget:
 #  minAvailable: 2
 #  maxUnavailable: 1
 
-## Configuration options for pod security policies.
-## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-podSecurityPolicy:
-  enabled: false
-  name: ""
-  annotations: {}
-  labels: {}
-  allowances: {}
-#    privileged: false
-#    seLinux:
-#      rule: RunAsAny
-#    supplementalGroups:
-#      rule: RunAsAny
-#    runAsUser:
-#      rule: RunAsAny
-#    fsGroup:
-#      rule: RunAsAny
-#    volumes:
-#      - '*'
-
 ## Readiness and liveness probe configuration options.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
 livenessProbe:
