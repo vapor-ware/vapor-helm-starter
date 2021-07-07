@@ -125,26 +125,6 @@ podDisruptionBudget:
   minAvailable: 2
   maxUnavailable: 1
 
-podSecurityPolicy:
-  enabled: true
-  name: psp
-  annotations:
-    rendered: test-value
-  labels:
-    rendered: test-value
-  allowances:
-    privileged: false
-    seLinux:
-      rule: RunAsAny
-    supplementalGroups:
-      rule: RunAsAny
-    runAsUser:
-      rule: RunAsAny
-    fsGroup:
-      rule: RunAsAny
-    volumes:
-      - '*'
-
 livenessProbe:
   enabled: true
   initialDelaySeconds: 10
